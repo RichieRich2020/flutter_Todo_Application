@@ -72,8 +72,8 @@ class _HeadingState extends State<Heading> {
                 itemCount: todolist.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 173, 132, 244)),
+                    decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 173, 132, 244)),
                     margin: EdgeInsets.all(5),
                     padding: EdgeInsets.all(10),
                     child: Row(
