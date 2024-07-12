@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert'; // Import for JSON encoding/decoding
 import 'package:http/http.dart' as http;
+import 'package:my_flutter_todoapplication/bloc/TodoBloc.dart';
 import './database/database_service.dart';
+import './bloc/TodoBloc.dart';
 
 class Heading extends StatefulWidget {
   const Heading({super.key});
@@ -12,40 +14,50 @@ class Heading extends StatefulWidget {
 
 class _HeadingState extends State<Heading> {
   TextEditingController todoText = TextEditingController();
-
+  final TodoBloc Bloctodo = TodoBloc();
   // List<Map<String, dynamic>> todolist = [
   //   {"task": "Task 1", "donecheck": false},
   //   {"task": "Task 2", "donecheck": false},
   //   {"task": "Task 3", "donecheck": false}
   // ];
 
-  List<Map<String, dynamic>> todolist = [];
+  // List<Map<String, dynamic>> todolist = [];
 
-  final DatabaseService _databaseService = DatabaseService();
+  // final DatabaseService _databaseService = DatabaseService();
+
   @override
   void initState() {
     super.initState();
-    fetchTodos();
-  }
-
-  Future<void> fetchTodos() async {
-    final todo = await _databaseService.getTodos();
-    setState(() {
-      todolist = todo;
-    });
-    print("$todolist todolist");
+    Bloctodo.fetchTodos();
   }
 
   Future<void> addtodofunc() async {
-    final newTodo = {"task": todoText.text, "donecheck": 0};
-    await _databaseService.insertTodo(newTodo);
-    fetchTodos();
+    await Bloctodo.addTodo(todoText.text);
+    // Bloctodo.fetchTodos();
+    setState(() {
+      Bloctodo.fetchTodos();
+    });
   }
+
+  // Future<void> fetchTodos() async {
+  //   final todo = await _databaseService.getTodos();
+  //   setState(() {
+  //     todolist = todo;
+  //   });
+  //   print("$todolist todolist");
+  // }
+
+  // Future<void> addtodofunc() async {
+  //   final newTodo = {"task": todoText.text, "donecheck": 0};
+  //   await _databaseService.insertTodo(newTodo);
+  //   fetchTodos();
+  // }
 
   Future<void> updatetodofunc(int index) async {
     // await _databaseService.updateTodo(index);
     // fetchTodos();
   }
+
   // Future<void> fetchTodos() async {
   //   final response =
   //       await http.get(Uri.parse('http://10.0.2.2:5000/api/todos'));
@@ -91,7 +103,6 @@ class _HeadingState extends State<Heading> {
   //   setState(() {
   //     todolist[index]["donecheck"] = todolist[index]["donecheck"] == 1 ? 0 : 1;
   //   });
-
   // }
 
   @override
@@ -136,7 +147,7 @@ class _HeadingState extends State<Heading> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: todolist.length,
+                itemCount: Bloctodo.todos.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     decoration: const BoxDecoration(
@@ -148,10 +159,10 @@ class _HeadingState extends State<Heading> {
                       children: [
                         Text((index + 1).toString()),
                         Text(
-                          todolist[index]["task"],
+                          Bloctodo.todos[index]["task"],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            decoration: todolist[index]["donecheck"] == 1
+                            decoration: Bloctodo.todos[index]["donecheck"] == 1
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
                           ),
@@ -160,10 +171,10 @@ class _HeadingState extends State<Heading> {
                           children: [
                             IconButton(
                               icon: Icon(
-                                color: todolist[index]["donecheck"] == 1
+                                color: Bloctodo.todos[index]["donecheck"] == 1
                                     ? Colors.green
                                     : Colors.red,
-                                todolist[index]["donecheck"] == 1
+                                Bloctodo.todos[index]["donecheck"] == 1
                                     ? Icons.check_box
                                     : Icons.check_box_outline_blank,
                               ),
