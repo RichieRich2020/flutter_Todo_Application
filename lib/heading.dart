@@ -11,11 +11,13 @@ class Heading extends StatefulWidget {
 
 class _HeadingState extends State<Heading> {
   TextEditingController todoText = TextEditingController();
+
   // List<Map<String, dynamic>> todolist = [
   //   {"task": "Task 1", "donecheck": false},
   //   {"task": "Task 2", "donecheck": false},
   //   {"task": "Task 3", "donecheck": false}
   // ];
+
   List<Map<String, dynamic>> todolist = [];
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _HeadingState extends State<Heading> {
   //     todolist.add({"task": todoText.text, "donecheck": false});
   //   });
   // }
+
   Future<void> addtodofunc() async {
     final response = await http.post(
       Uri.parse('http://10.0.2.2:5000/api/todos'),
@@ -78,7 +81,7 @@ class _HeadingState extends State<Heading> {
           "Todos",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: Color.fromARGB(255, 130, 75, 196),
       ),
       body: Container(
         decoration:
