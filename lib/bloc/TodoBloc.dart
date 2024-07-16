@@ -9,6 +9,7 @@ class TodoBloc {
 
   Future<void> fetchTodos() async {
     _todos = await _databaseService.getTodos();
+    // todos.add(_todos as Map<String, dynamic>);
   }
 
   Future<void> addTodo(String task) async {

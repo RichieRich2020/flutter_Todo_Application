@@ -30,6 +30,7 @@ class DatabaseService {
 
   Future<List<Map<String, dynamic>>> getTodos() async {
     final db = await database;
+    print("badfa ka baad");
     return await db.query('todos');
   }
 

@@ -28,7 +28,9 @@ class _HeadingState extends State<Heading> {
   @override
   void initState() {
     super.initState();
-    Bloctodo.fetchTodos();
+    Bloctodo.fetchTodos().then((_) {
+      setState(() {});
+    });
   }
 
   Future<void> addtodofunc() async {
