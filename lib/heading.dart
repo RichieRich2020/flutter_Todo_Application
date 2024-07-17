@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert'; // Import for JSON encoding/decoding
 import 'package:http/http.dart' as http;
-import 'package:my_flutter_todoapplication/bloc/TodoBloc.dart';
+import 'package:my_flutter_todoapplication/bloc/todo_bloc.dart';
 import './database/database_service.dart';
-import './bloc/TodoBloc.dart';
 
 class Heading extends StatefulWidget {
   const Heading({super.key});
@@ -14,7 +14,7 @@ class Heading extends StatefulWidget {
 
 class _HeadingState extends State<Heading> {
   TextEditingController todoText = TextEditingController();
-  final TodoBloc Bloctodo = TodoBloc();
+
   // List<Map<String, dynamic>> todolist = [
   //   {"task": "Task 1", "donecheck": false},
   //   {"task": "Task 2", "donecheck": false},
@@ -28,18 +28,13 @@ class _HeadingState extends State<Heading> {
   @override
   void initState() {
     super.initState();
-    Bloctodo.fetchTodos().then((_) {
-      setState(() {});
-    });
   }
 
-  Future<void> addtodofunc() async {
-    await Bloctodo.addTodo(todoText.text);
-    // Bloctodo.fetchTodos();
-    setState(() {
-      Bloctodo.fetchTodos();
-    });
-  }
+  // Future<void> addtodofunc() async {
+  //   final task = todoText.text.trim();
+  //   print("wdwedf $task");
+  //   context.read<TodoBloc>().add(AddTodo(task: task));
+  // }
 
   // Future<void> fetchTodos() async {
   //   final todo = await _databaseService.getTodos();
@@ -55,10 +50,7 @@ class _HeadingState extends State<Heading> {
   //   fetchTodos();
   // }
 
-  Future<void> updatetodofunc(int index) async {
-    // await _databaseService.updateTodo(index);
-    // fetchTodos();
-  }
+  Future<void> updatetodofunc(int index) async {}
 
   // Future<void> fetchTodos() async {
   //   final response =
@@ -137,7 +129,11 @@ class _HeadingState extends State<Heading> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: ElevatedButton(
-                onPressed: addtodofunc,
+                onPressed: () {
+                  context
+                      .read<TodoBloc>()
+                      .add(AddTodo(task: todoText.text.trim()));
+                },
                 child: const Text(
                   "Add Your Task",
                   style: TextStyle(
@@ -148,46 +144,55 @@ class _HeadingState extends State<Heading> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: Bloctodo.todos.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 173, 132, 244)),
-                    margin: EdgeInsets.all(5),
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text((index + 1).toString()),
-                        Text(
-                          Bloctodo.todos[index]["task"],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            decoration: Bloctodo.todos[index]["donecheck"] == 1
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                color: Bloctodo.todos[index]["donecheck"] == 1
-                                    ? Colors.green
-                                    : Colors.red,
-                                Bloctodo.todos[index]["donecheck"] == 1
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
+              child: BlocBuilder<TodoBloc, TodoState>(
+                builder: (context, state) {
+                  if (state is TodoInitial) {
+                    return Center(child: Text("No tasks yet."));
+                  } else if (state is TodoLoaded) {
+                    return ListView.builder(
+                      itemCount: state.todos.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 173, 132, 244)),
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text((index + 1).toString()),
+                              Text(
+                                state.todos[index]["task"],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
-                              onPressed: () => updatetodofunc(index),
-                            ),
-                            Icon(Icons.create_outlined)
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                              // Row(
+                              //   children: [
+                              //     IconButton(
+                              //       icon: Icon(
+                              //         color:
+                              //             state.todos[index]["donecheck"] == 1
+                              //                 ? Colors.green
+                              //                 : Colors.red,
+                              //         state.todos[index]["donecheck"] == 1
+                              //             ? Icons.check_box
+                              //             : Icons.check_box_outline_blank,
+                              //       ),
+                              //       onPressed: () {},
+                              //     ),
+                              //     Icon(Icons.create_outlined)
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else if (state is TodoFailure) {
+                    return Center(
+                        child: Text("Failed to load todos: ${state.error}"));
+                  }
+                  return Container();
                 },
               ),
             ),
@@ -197,5 +202,3 @@ class _HeadingState extends State<Heading> {
     );
   }
 }
-
-void main() {}
