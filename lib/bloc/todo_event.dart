@@ -14,4 +14,8 @@ class UpdateTodo extends TodoEvent {
   UpdateTodo({required this.index});
 }
 
-class GetTodo extends TodoEvent {}
+class DeleteTodo extends TodoEvent {
+  final int index;
+
+  DeleteTodo({required this.index});
+}

@@ -32,5 +32,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         emit(TodoLoaded(todos: [...currentState.todos]));
       }
     });
+    on<DeleteTodo>((event, emit) {
+      if (state is TodoLoaded) {
+        print(event.index);
+        final currentState = state as TodoLoaded;
+        currentState.todos.removeAt(event.index);
+
+        emit(TodoLoaded(todos: [...currentState.todos]));
+      }
+    });
   }
 }

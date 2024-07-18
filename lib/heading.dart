@@ -185,7 +185,13 @@ class _HeadingState extends State<Heading> {
                                           .add(UpdateTodo(index: index));
                                     },
                                   ),
-                                  Icon(Icons.create_outlined)
+                                  IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<TodoBloc>()
+                                            .add(DeleteTodo(index: index));
+                                      },
+                                      icon: Icon(Icons.delete))
                                 ],
                               ),
                             ],
