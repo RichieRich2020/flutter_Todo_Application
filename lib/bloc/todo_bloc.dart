@@ -10,12 +10,26 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         final currentState = state as TodoLoaded;
         emit(TodoLoaded(todos: [
           ...currentState.todos,
-          {'task': event.task}
+          {'task': event.task, 'donecheck': 0}
         ]));
       } else {
         emit(TodoLoaded(todos: [
-          {'task': event.task}
+          {'task': event.task, 'donecheck': 0}
         ]));
+      }
+    });
+
+    on<UpdateTodo>((event, emit) {
+      if (state is TodoLoaded) {
+        print(event.index);
+        final currentState = state as TodoLoaded;
+        if (currentState.todos[event.index]["donecheck"] == 1) {
+          currentState.todos[event.index]["donecheck"] = 0;
+        } else {
+          currentState.todos[event.index]["donecheck"] = 1;
+        }
+
+        emit(TodoLoaded(todos: [...currentState.todos]));
       }
     });
   }

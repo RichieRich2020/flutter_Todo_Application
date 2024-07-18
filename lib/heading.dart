@@ -50,7 +50,7 @@ class _HeadingState extends State<Heading> {
   //   fetchTodos();
   // }
 
-  Future<void> updatetodofunc(int index) async {}
+  // Future<void> updatetodofunc(int index) async {}
 
   // Future<void> fetchTodos() async {
   //   final response =
@@ -164,25 +164,30 @@ class _HeadingState extends State<Heading> {
                               Text(
                                 state.todos[index]["task"],
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              // Row(
-                              //   children: [
-                              //     IconButton(
-                              //       icon: Icon(
-                              //         color:
-                              //             state.todos[index]["donecheck"] == 1
-                              //                 ? Colors.green
-                              //                 : Colors.red,
-                              //         state.todos[index]["donecheck"] == 1
-                              //             ? Icons.check_box
-                              //             : Icons.check_box_outline_blank,
-                              //       ),
-                              //       onPressed: () {},
-                              //     ),
-                              //     Icon(Icons.create_outlined)
-                              //   ],
-                              // ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      color:
+                                          state.todos[index]["donecheck"] == 1
+                                              ? Colors.green
+                                              : Colors.red,
+                                      state.todos[index]["donecheck"] == 1
+                                          ? Icons.check_box
+                                          : Icons.check_box_outline_blank,
+                                    ),
+                                    onPressed: () {
+                                      context
+                                          .read<TodoBloc>()
+                                          .add(UpdateTodo(index: index));
+                                    },
+                                  ),
+                                  Icon(Icons.create_outlined)
+                                ],
+                              ),
                             ],
                           ),
                         );

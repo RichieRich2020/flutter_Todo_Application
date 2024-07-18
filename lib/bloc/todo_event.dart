@@ -7,3 +7,11 @@ class AddTodo extends TodoEvent {
 
   AddTodo({required this.task});
 }
+
+class UpdateTodo extends TodoEvent {
+  final int index;
+
+  UpdateTodo({required this.index});
+}
+
+class GetTodo extends TodoEvent {}

@@ -21,3 +21,9 @@ class TodoLoaded extends TodoState {
 
   TodoLoaded({required this.todos});
 }
+
+class TodoUpdated extends TodoState {
+  final int index;
+
+  TodoUpdated({required this.index});
+}
